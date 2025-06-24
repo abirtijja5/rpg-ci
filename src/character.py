@@ -18,9 +18,7 @@ class Character:
             self.health = max(0, self.health - damage)
     
     def attack(self, target):
-        if self.is_dead() or target is None or target.is_dead():
-            return False
-        target.take_damage(1)
+        target.take_damage(999)
         return True
     
     def heal(self, amount):
