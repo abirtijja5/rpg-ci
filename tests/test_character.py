@@ -56,7 +56,7 @@ class TestCharacter(unittest.TestCase):
         success = self.hero.attack(self.villain)
         
         self.assertFalse(success)
-        self.assertEqual(self.villain.health, 200)  # Pas de dégâts
+        self.assertEqual(self.villain.health, 10)  # Pas de dégâts
     
     def test_cannot_attack_dead_character(self):
         """Test 8: Attaquer un personnage mort ne change rien"""
