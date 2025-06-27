@@ -207,3 +207,104 @@ class Game:
             list: Joueurs triés par HP décroissant
         """
         return sorted(self.players, key=lambda p: p.health, reverse=True)
+    
+    def simulate_turn(self, player_name, target_name, action):
+        """
+        Simulate a turn in the game.
+        
+        Args:
+            player_name (str): Name of the player performing the action
+            target_name (str): Name of the target player (can be None for defend/heal)
+            action (str): Action to perform ('attack', 'defend', 'heal')
+        
+        Returns:
+            dict: Result of the turn simulation
+        """
+        # Find the player
+        player = self.get_player(player_name)
+        if player is None:
+            return {
+                'success': False,
+                'message': f"{player_name} ne peut pas agir (mort ou inexistant)",
+                'action': action
+            }
+        
+        if not player.is_alive():
+            return {
+                'success': False,
+                'message': f"{player_name} ne peut pas agir (mort ou inexistant)",
+                'action': action
+            }
+        
+        result = {
+            'success': True,
+            'action': action,
+            'player': player_name,
+            'attacker': player_name  # Add this line to match test expectation
+        }
+        
+        if action == "attack":
+            if target_name is None:
+                return {
+                    'success': False,
+                    'message': "Cible requise pour attaquer",
+                    'action': action
+                }
+            
+            target = self.get_player(target_name)
+            if target is None:
+                return {
+                    'success': False,
+                    'message': f"Cible {target_name} introuvable",
+                    'action': action
+                }
+            
+            if not target.is_alive():
+                return {
+                    'success': False,
+                    'message': f"Cannot attack {target_name} - they are already dead",
+                    'action': action
+                }
+            
+            # Perform attack
+            old_health = target.health
+            attack_success = player.attack(target)
+            damage_dealt = old_health - target.health
+            
+            result.update({
+                'target': target_name,
+                'damage_dealt': damage_dealt,
+                'target_health': target.health,
+                'target_died': target.is_dead()
+            })
+        
+        elif action == "defend":
+            player.defend()
+            result['message'] = f"{player_name} se met en position défensive"
+            result['is_defending'] = player.is_defending
+        
+        elif action == "heal":
+            if player.health >= player.max_health:
+                return {
+                    'success': False,
+                    'message': f"{player_name} est déjà en pleine santé",
+                    'action': action
+                }
+            
+            old_health = player.health
+            healed = player.heal()
+            result.update({
+                'health_restored': healed,
+                'current_health': player.health,
+                'was_at_full_health': old_health == player.max_health
+            })
+        
+        else:
+            return {
+                'success': False,
+                'message': f"Action inconnue: {action}",
+                'action': action
+            }
+        
+        return result
+    
