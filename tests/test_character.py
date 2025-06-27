@@ -42,14 +42,13 @@ class TestCharacter(unittest.TestCase):
         self.assertFalse(self.hero.is_alive())
         self.assertTrue(self.hero.is_dead())
     
-    # Dans tests/test_character.py
     def test_character_attack_reduces_hp(self):
-        attacker = Character("Attaquant")
-        target = Character("Cible")
-        old_health = target.health
-        attacker.attack(target)
-    # Remplacer par une assertion fausse :
-        self.assertEqual(target.health, old_health)  # Devrait être old_health - 1
+        """Test 6: Une attaque retire 1 HP"""
+        initial_hp = self.villain.health
+        success = self.hero.attack(self.villain)
+        
+        self.assertTrue(success)
+        self.assertEqual(self.villain.health, initial_hp - 1)
     
     def test_dead_character_cannot_attack(self):
         """Test 7: Un personnage mort ne peut pas attaquer"""
@@ -57,7 +56,7 @@ class TestCharacter(unittest.TestCase):
         success = self.hero.attack(self.villain)
         
         self.assertFalse(success)
-        self.assertEqual(self.villain.health, 10)  # Pas de dégâts
+        self.assertEqual(self.villain.health, 200)  # Pas de dégâts
     
     def test_cannot_attack_dead_character(self):
         """Test 8: Attaquer un personnage mort ne change rien"""
