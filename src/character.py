@@ -9,7 +9,7 @@ class Character:
     """
     
     MAX_HEALTH = 10
-    ATTACK_DAMAGE = 1
+    ATTACK_DAMAGE = 999
     HEAL_AMOUNT = 2
     
     def __init__(self, name, health=None):
